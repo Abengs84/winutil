@@ -1005,6 +1005,14 @@
                         </TextBlock>
                     </ToggleButton.Content>
                 </ToggleButton>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="Auto" MinWidth="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonConfigBackgroundColor}" Foreground="{DynamicResource ButtonConfigForegroundColor}" FontWeight="Bold" Name="WPFTab6BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonConfigForegroundColor}">
+                            <Underline>P</Underline>rovision
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
             </StackPanel>
 
             <!-- Search Bar and Action Buttons -->
@@ -1678,6 +1686,31 @@
                     </Grid>
 
                 </Grid>
+            </TabItem>
+            <TabItem Header="Provision" Visibility="Collapsed" Name="WPFTab6">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="{DynamicResource TabContentMargin}">
+                    <StackPanel Background="Transparent" Margin="8">
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="Bold"
+                                   Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8">
+                            Sysadmin provisioning (fork)
+                        </TextBlock>
+                        <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
+                                   TextWrapping="Wrap" Margin="0,0,0,16">
+                            Install Abitti Candidate, apply light provisioning tweaks, or reset common device classes by profile.
+                            Device reset disables and re-enables matching PnP devices (may interrupt input/audio briefly).
+                        </TextBlock>
+                        <StackPanel Orientation="Vertical" Margin="0,0,0,12">
+                            <Button Name="WPFProvisionAbittiButton" Content="Install Abitti 2 Candidate (silent MSI)"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionTweaksButton" Content="Apply provisioning tweaks (e.g. long paths)"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionAsusResetButton" Content="Reset devices: Asus VivoBook profile"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionThinkPadResetButton" Content="Reset devices: Lenovo ThinkPad profile"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>

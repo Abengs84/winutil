@@ -73,5 +73,9 @@ function Invoke-WPFButton {
                  $sync.Form.Resources["FOSSColor"] = $sync.Form.Resources["MainForegroundColor"]
             }
         }
+        "WPFProvisionAbittiButton" { Invoke-WPFInstallAbittiCandidate }
+        "WPFProvisionTweaksButton" { Invoke-WPFApplySysadminProvisioningTweaks }
+        "WPFProvisionAsusResetButton" { Invoke-WPFAsusVivoBookDeviceReset }
+        "WPFProvisionThinkPadResetButton" { Invoke-WPFThinkPadDeviceReset }
     }
 }

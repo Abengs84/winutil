@@ -22,20 +22,17 @@ Winutil must be run in Admin mode because it performs system-wide tweaks. To ach
    - Type "PowerShell" or "Terminal" (for Windows 11).
    - Press `Ctrl + Shift + Enter` or Right-click and choose "Run as administrator" to launch it with administrator privileges.
 
-### Launch Command
+### Launch Command (this fork)
 
-#### Stable Branch (Recommended)
-
-```ps1
-irm "https://christitus.com/win" | iex
-```
-#### Dev Branch
+Build `winutil.ps1` with `.\Compile.ps1`, then publish it as release asset **`winutil.ps1`** on [Abengs84/winutil](https://github.com/Abengs84/winutil) so the URL below resolves.
 
 ```ps1
-irm "https://christitus.com/windev" | iex
+irm "https://github.com/Abengs84/winutil/releases/latest/download/winutil.ps1" | iex
 ```
 
-If you have Issues, refer to [Known Issues](https://winutil.christitus.com/knownissues/) or [Create Issue](https://github.com/ChrisTitusTech/winutil/issues)
+Upstream shortcuts (Chris Titus Tech) for reference: `irm "https://christitus.com/win" | iex` — those load the official build, not this fork.
+
+If you have Issues, refer to [Known Issues](https://winutil.christitus.com/knownissues/) or open an issue on your fork.
 
 ## 🎓 Documentation
 

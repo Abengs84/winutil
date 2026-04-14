@@ -68,6 +68,23 @@ Update-Progress "Adding: Functions" 20
 Get-ChildItem "functions" -Recurse -File | ForEach-Object {
     $script_content.Add($(Get-Content $psitem.FullName))
     }
+
+Update-Progress "Adding: Custom provisioning (fork)" 30
+$customProvisionFiles = @(
+    'custom\lib\SetupLogging.ps1',
+    'custom\lib\SysadminTweaks.ps1',
+    'custom\devices\utils\reset-device.ps1',
+    'custom\apps\abitti.ps1',
+    'custom\devices\profiles\asus-vivobook.ps1',
+    'custom\devices\profiles\lenovo-thinkpad.ps1'
+)
+foreach ($rel in $customProvisionFiles) {
+    $cf = Join-Path $workingdir $rel
+    if (Test-Path -LiteralPath $cf) {
+        $script_content.Add($(Get-Content -LiteralPath $cf))
+    }
+}
+
 Update-Progress "Adding: Config *.json" 40
 Get-ChildItem "config" | Where-Object {$psitem.extension -eq ".json"} | ForEach-Object {
     $json = (Get-Content $psitem.FullName -Raw)

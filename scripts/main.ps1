@@ -25,7 +25,9 @@ $InitialSessionState.Variables.Add($uiVar)
 $InitialSessionState.Variables.Add($offlineVar)
 
 # Get every private function and add them to the session state
-$functions = Get-ChildItem function:\ | Where-Object { $_.Name -imatch 'winutil|WPF' }
+$functions = Get-ChildItem function:\ | Where-Object {
+    $_.Name -imatch 'winutil|WPF|Abitti|Write-SetupLog|Reset-Device|VivoBook|ThinkPad|SysadminProvisioning'
+}
 foreach ($function in $functions) {
     $functionDefinition = Get-Content function:\$($function.name)
     $functionEntry = New-Object System.Management.Automation.Runspaces.SessionStateFunctionEntry -ArgumentList $($function.name), $functionDefinition
@@ -290,6 +292,7 @@ $commonKeyEvents = {
             "C" { Invoke-WPFButton "WPFTab3BT"; $keyEventArgs.Handled = $true } # Navigate to Config tab
             "U" { Invoke-WPFButton "WPFTab4BT"; $keyEventArgs.Handled = $true } # Navigate to Updates tab
             "W" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Navigate to Win11ISO tab
+            "P" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Provision / sysadmin tab
         }
     }
     # Handle Ctrl key combinations for specific actions
@@ -487,11 +490,12 @@ $sync["AboutMenuItem"].Add_Click({
     Invoke-WPFPopup -Action "Hide" -Popups @("Settings")
 
     $authorInfo = @"
+Fork     : <a href="https://github.com/Abengs84/winutil">Abengs84/winutil</a>
+Upstream : <a href="https://github.com/ChrisTitusTech/winutil">ChrisTitusTech/winutil</a>
 Author   : <a href="https://github.com/ChrisTitusTech">@ChrisTitusTech</a>
 UI       : <a href="https://github.com/MyDrift-user">@MyDrift-user</a>, <a href="https://github.com/Marterich">@Marterich</a>
 Runspace : <a href="https://github.com/DeveloperDurp">@DeveloperDurp</a>, <a href="https://github.com/Marterich">@Marterich</a>
-GitHub   : <a href="https://github.com/ChrisTitusTech/winutil">ChrisTitusTech/winutil</a>
-Version  : <a href="https://github.com/ChrisTitusTech/winutil/releases/tag/$($sync.version)">$($sync.version)</a>
+Version  : <a href="https://github.com/Abengs84/winutil/releases">$($sync.version)</a>
 "@
     Show-CustomDialog -Title "About" -Message $authorInfo
 })
