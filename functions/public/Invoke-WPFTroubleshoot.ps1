@@ -19,27 +19,47 @@ function Update-WPFTroubleshootTabDisplay {
 
     $labelMap = @{}
 
-    foreach ($key in $catalog.Keys) {
-        $meta = $catalog[$key]
-        $idSet = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    foreach ($groupKey in $catalog.Keys) {
+        $groupMeta = $catalog[$groupKey]
+        if ($groupMeta -isnot [System.Collections.IDictionary]) {
+            continue
+        }
+
+        $patternsRaw = $groupMeta['Patterns']
+        if ($null -eq $patternsRaw) {
+            continue
+        }
+
+        # Ensure we never iterate a single pattern string character-by-character
+        $patternList = @($patternsRaw)
+
+        $instanceIdSet = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
         $lines = New-Object System.Collections.Generic.List[string]
 
-        foreach ($pattern in $meta.Patterns) {
+        foreach ($pattern in $patternList) {
+            if ([string]::IsNullOrWhiteSpace([string]$pattern)) { continue }
             foreach ($d in $allDevices) {
                 if (-not $d.FriendlyName) { continue }
                 if ($d.FriendlyName -notlike $pattern) { continue }
-                if ($idSet.Add($d.InstanceId)) {
+                $iid = [string]$d.InstanceId
+                if ([string]::IsNullOrWhiteSpace($iid)) { continue }
+                if ($instanceIdSet.Add($iid)) {
                     $lines.Add("$($d.FriendlyName)  [Status: $($d.Status)]")
                 }
             }
         }
 
-        $sync.troubleshootDeviceIds[$key] = $idSet.ToArray()
+        $n = $instanceIdSet.Count
+        $idArr = New-Object 'System.String[]' $n
+        if ($n -gt 0) {
+            $instanceIdSet.CopyTo($idArr)
+        }
+        $sync.troubleshootDeviceIds[$groupKey] = $idArr
 
         if ($lines.Count -gt 0) {
-            $labelMap[$key] = ($lines -join "`r`n")
+            $labelMap[$groupKey] = ($lines -join "`r`n")
         } else {
-            $labelMap[$key] = '(No matching devices found.)'
+            $labelMap[$groupKey] = '(No matching devices found.)'
         }
     }
 
