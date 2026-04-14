@@ -73,7 +73,9 @@ Update-Progress "Adding: Custom provisioning (fork)" 30
 $customProvisionFiles = @(
     'custom\lib\SetupLogging.ps1',
     'custom\lib\SysadminTweaks.ps1',
+    'custom\lib\ProvisionExtras.ps1',
     'custom\devices\utils\reset-device.ps1',
+    'custom\devices\troubleshoot-catalog.ps1',
     'custom\apps\abitti.ps1',
     'custom\devices\profiles\asus-vivobook.ps1',
     'custom\devices\profiles\lenovo-thinkpad.ps1'

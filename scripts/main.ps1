@@ -26,7 +26,7 @@ $InitialSessionState.Variables.Add($offlineVar)
 
 # Get every private function and add them to the session state
 $functions = Get-ChildItem function:\ | Where-Object {
-    $_.Name -imatch 'winutil|WPF|Abitti|Write-SetupLog|Reset-Device|VivoBook|ThinkPad|SysadminProvisioning'
+    $_.Name -imatch 'winutil|WPF|Abitti|Write-SetupLog|Reset-Device|Reset-Pnp|VivoBook|ThinkPad|SysadminProvisioning|Get-Abitti|Update-WPFAbitti|Get-Troubleshoot|Invoke-Provision|Provision'
 }
 foreach ($function in $functions) {
     $functionDefinition = Get-Content function:\$($function.name)
@@ -293,6 +293,9 @@ $commonKeyEvents = {
             "U" { Invoke-WPFButton "WPFTab4BT"; $keyEventArgs.Handled = $true } # Navigate to Updates tab
             "W" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Navigate to Win11ISO tab
             "P" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Provision / sysadmin tab
+            "A" { Invoke-WPFButton "WPFTab7BT"; $keyEventArgs.Handled = $true } # Abitti2 tab
+            "R" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # Troubleshoot tab
+            "Y" { Invoke-WPFButton "WPFTab9BT"; $keyEventArgs.Handled = $true } # System Tools tab (sYstem)
         }
     }
     # Handle Ctrl key combinations for specific actions
@@ -431,6 +434,7 @@ $sync["Form"].Add_Loaded({
     $sync.Form.MinWidth = "1000"
     $sync["Form"].MaxWidth = [Double]::PositiveInfinity
     $sync["Form"].MaxHeight = [Double]::PositiveInfinity
+    Update-WPFAbittiVersionDisplay
 })
 
 $NavLogoPanel = $sync["Form"].FindName("NavLogoPanel")

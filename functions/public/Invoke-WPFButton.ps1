@@ -73,9 +73,23 @@ function Invoke-WPFButton {
                  $sync.Form.Resources["FOSSColor"] = $sync.Form.Resources["MainForegroundColor"]
             }
         }
-        "WPFProvisionAbittiButton" { Invoke-WPFInstallAbittiCandidate }
+        "WPFAbittiInstallButton" { Invoke-WPFInstallAbittiCandidate }
+        "WPFAbittiRefreshButton" { Update-WPFAbittiVersionDisplay }
         "WPFProvisionTweaksButton" { Invoke-WPFApplySysadminProvisioningTweaks }
-        "WPFProvisionAsusResetButton" { Invoke-WPFAsusVivoBookDeviceReset }
-        "WPFProvisionThinkPadResetButton" { Invoke-WPFThinkPadDeviceReset }
+        "WPFProvisionDisableTipsButton" { Invoke-WPFProvisionDisableTipsAction }
+        "WPFProvisionWingetUpgradeButton" { Invoke-WPFProvisionWingetUpgradeAction }
+        "WPFProvisionStoreUpdatesButton" { Invoke-WPFProvisionStoreUpdatesAction }
+        "WPFProvisionNewUserButton" { Invoke-WPFProvisionCreateUserAction }
+        "WPFProvisionTimeResyncButton" { Invoke-WPFProvisionTimeResyncAction }
+        "WPFtrouble_scan" { Update-WPFTroubleshootTabDisplay }
+        "WPFtrouble_restart_network" { Invoke-WPFTroubleshootRestartGroup -GroupKey network }
+        "WPFtrouble_restart_bluetooth" { Invoke-WPFTroubleshootRestartGroup -GroupKey bluetooth }
+        "WPFtrouble_restart_audio" { Invoke-WPFTroubleshootRestartGroup -GroupKey audio }
+        "WPFtrouble_restart_camera" { Invoke-WPFTroubleshootRestartGroup -GroupKey camera }
+        "WPFtrouble_restart_pointing" { Invoke-WPFTroubleshootRestartGroup -GroupKey pointing }
+        "WPFtrouble_restart_keyboard" { Invoke-WPFTroubleshootRestartGroup -GroupKey keyboard }
+        "WPFsys_devmgmt" { Invoke-WPFSystemToolDeviceManager }
+        "WPFsys_gpedit" { Invoke-WPFSystemToolGpedit }
+        "WPFsys_lusrmgr" { Invoke-WPFSystemToolLusrmgr }
     }
 }

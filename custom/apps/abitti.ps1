@@ -6,17 +6,43 @@ if (-not (Get-Command Write-SetupLog -ErrorAction SilentlyContinue)) {
 }
 
 function Test-AbittiCandidateInstalled {
+    return ($null -ne (Get-AbittiInstalledDetails))
+}
+
+function Get-AbittiInstalledDetails {
+    <#
+    .SYNOPSIS
+        Reads Abitti from HKLM Uninstall (same source as Apps & Features).
+    #>
     $uninstallRoots = @(
         'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*',
         'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
     )
     foreach ($root in $uninstallRoots) {
-        $hit = Get-ItemProperty $root -ErrorAction SilentlyContinue |
-            Where-Object { $_.DisplayName -and $_.DisplayName -like '*Abitti*' } |
-            Select-Object -First 1
-        if ($hit) { return $true }
+        $hits = @(Get-ItemProperty $root -ErrorAction SilentlyContinue |
+            Where-Object { $_.DisplayName -and $_.DisplayName -like '*Abitti*' })
+        if ($hits.Count -gt 0) {
+            $h = $hits[0]
+            return [pscustomobject]@{
+                DisplayName    = $h.DisplayName
+                DisplayVersion = $h.DisplayVersion
+                Publisher      = $h.Publisher
+            }
+        }
     }
-    return $false
+    return $null
+}
+
+function Get-AbittiVersionDisplayString {
+    $d = Get-AbittiInstalledDetails
+    if (-not $d) {
+        return 'Not installed'
+    }
+    $ver = $d.DisplayVersion
+    if ([string]::IsNullOrWhiteSpace($ver)) {
+        $ver = 'unknown'
+    }
+    return "$($d.DisplayName)  |  Version $ver"
 }
 
 function Install-AbittiCandidate {

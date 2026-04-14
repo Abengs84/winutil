@@ -1013,6 +1013,30 @@
                         </TextBlock>
                     </ToggleButton.Content>
                 </ToggleButton>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="Auto" MinWidth="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonTweaksBackgroundColor}" Foreground="{DynamicResource ButtonTweaksForegroundColor}" FontWeight="Bold" Name="WPFTab7BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonTweaksForegroundColor}">
+                            <Underline>A</Underline>britti2
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="Auto" MinWidth="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonUpdatesBackgroundColor}" Foreground="{DynamicResource ButtonUpdatesForegroundColor}" FontWeight="Bold" Name="WPFTab8BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonUpdatesForegroundColor}">
+                            T<Underline>r</Underline>oubleshoot
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
+                <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="Auto" MinWidth="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonInstallBackgroundColor}" Foreground="White" FontWeight="Bold" Name="WPFTab9BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="White">
+                            S<Underline>y</Underline>stem Tools
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
             </StackPanel>
 
             <!-- Search Bar and Action Buttons -->
@@ -1692,23 +1716,138 @@
                     <StackPanel Background="Transparent" Margin="8">
                         <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="Bold"
                                    Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8">
-                            Sysadmin provisioning (fork)
+                            Provision (new PC setup)
                         </TextBlock>
                         <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
-                                   TextWrapping="Wrap" Margin="0,0,0,16">
-                            Install Abitti Candidate, apply light provisioning tweaks, or reset common device classes by profile.
-                            Device reset disables and re-enables matching PnP devices (may interrupt input/audio briefly).
+                                   TextWrapping="Wrap" Margin="0,0,0,12">
+                            Use this tab when preparing a fresh or rebuilt machine. Tips/suggestions use the registry under the account running WinUtil (HKCU).
+                            For device restarts, use the Troubleshoot tab. Abitti is on the Abitti2 tab.
                         </TextBlock>
                         <StackPanel Orientation="Vertical" Margin="0,0,0,12">
-                            <Button Name="WPFProvisionAbittiButton" Content="Install Abitti 2 Candidate (silent MSI)"
-                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                             <Button Name="WPFProvisionTweaksButton" Content="Apply provisioning tweaks (e.g. long paths)"
                                     Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
-                            <Button Name="WPFProvisionAsusResetButton" Content="Reset devices: Asus VivoBook profile"
+                            <Button Name="WPFProvisionDisableTipsButton" Content="Disable tips / suggestions and restart Explorer"
                                     Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
-                            <Button Name="WPFProvisionThinkPadResetButton" Content="Reset devices: Lenovo ThinkPad profile"
+                            <Button Name="WPFProvisionWingetUpgradeButton" Content="Run winget upgrade --all"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionStoreUpdatesButton" Content="Open Microsoft Store (Downloads and updates)"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionNewUserButton" Content="Create local user (prompts for name, password, admin)"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionTimeResyncButton" Content="Fix time: recycle Windows Time service and resync"
                                     Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                         </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Abitti2" Visibility="Collapsed" Name="WPFTab7">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="{DynamicResource TabContentMargin}">
+                    <StackPanel Background="Transparent" Margin="8">
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="Bold"
+                                   Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8">
+                            Abitti 2 (Candidate)
+                        </TextBlock>
+                        <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
+                                   TextWrapping="Wrap" Margin="0,0,0,12">
+                            Installed build is read from the same uninstall registry as Settings &gt; Apps. After installing or upgrading, click Refresh.
+                        </TextBlock>
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,4">
+                            Installed on this PC
+                        </TextBlock>
+                        <TextBlock Name="WPFAbittiVersionDisplay" FontSize="{DynamicResource FontSize}"
+                                   Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap"
+                                   Margin="0,0,0,16" Text="Checking..."/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <Button Name="WPFAbittiRefreshButton" Content="Refresh version"
+                                    Margin="0,0,8,0" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        </StackPanel>
+                        <Button Name="WPFAbittiInstallButton" Content="Install Abitti 2 Candidate (silent MSI)"
+                                HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Troubleshoot" Visibility="Collapsed" Name="WPFTab8">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="{DynamicResource TabContentMargin}">
+                    <StackPanel Background="Transparent" Margin="8">
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="Bold"
+                                   Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8">
+                            Device troubleshoot
+                        </TextBlock>
+                        <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
+                                   TextWrapping="Wrap" Margin="0,0,0,8">
+                            Scan lists PnP devices by category (friendly name patterns). Restart disables and re-enables only the devices shown for that group.
+                        </TextBlock>
+                        <Button Name="WPFtrouble_scan" Content="Scan devices" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}" Margin="0,0,0,16"/>
+
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,4">Network (Wi-Fi / Ethernet)</TextBlock>
+                        <TextBox Name="WPFtrouble_list_network" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                                 MinHeight="72" MaxHeight="220" VerticalScrollBarVisibility="Auto"
+                                 Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
+                                 BorderBrush="{DynamicResource BorderColor}" Text="(not scanned)"/>
+                        <Button Name="WPFtrouble_restart_network" Content="Restart devices in this group" Margin="0,4,0,16" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,4">Bluetooth</TextBlock>
+                        <TextBox Name="WPFtrouble_list_bluetooth" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                                 MinHeight="72" MaxHeight="220" VerticalScrollBarVisibility="Auto"
+                                 Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
+                                 BorderBrush="{DynamicResource BorderColor}" Text="(not scanned)"/>
+                        <Button Name="WPFtrouble_restart_bluetooth" Content="Restart devices in this group" Margin="0,4,0,16" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,4">Audio / microphone / speakers</TextBlock>
+                        <TextBox Name="WPFtrouble_list_audio" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                                 MinHeight="72" MaxHeight="220" VerticalScrollBarVisibility="Auto"
+                                 Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
+                                 BorderBrush="{DynamicResource BorderColor}" Text="(not scanned)"/>
+                        <Button Name="WPFtrouble_restart_audio" Content="Restart devices in this group" Margin="0,4,0,16" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,4">Camera</TextBlock>
+                        <TextBox Name="WPFtrouble_list_camera" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                                 MinHeight="72" MaxHeight="220" VerticalScrollBarVisibility="Auto"
+                                 Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
+                                 BorderBrush="{DynamicResource BorderColor}" Text="(not scanned)"/>
+                        <Button Name="WPFtrouble_restart_camera" Content="Restart devices in this group" Margin="0,4,0,16" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,4">Mouse / touchpad / pointing</TextBlock>
+                        <TextBox Name="WPFtrouble_list_pointing" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                                 MinHeight="72" MaxHeight="220" VerticalScrollBarVisibility="Auto"
+                                 Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
+                                 BorderBrush="{DynamicResource BorderColor}" Text="(not scanned)"/>
+                        <Button Name="WPFtrouble_restart_pointing" Content="Restart devices in this group" Margin="0,4,0,16" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,4">Keyboard</TextBlock>
+                        <TextBox Name="WPFtrouble_list_keyboard" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True"
+                                 MinHeight="72" MaxHeight="220" VerticalScrollBarVisibility="Auto"
+                                 Foreground="{DynamicResource MainForegroundColor}" Background="{DynamicResource MainBackgroundColor}"
+                                 BorderBrush="{DynamicResource BorderColor}" Text="(not scanned)"/>
+                        <Button Name="WPFtrouble_restart_keyboard" Content="Restart devices in this group" Margin="0,4,0,16" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="System Tools" Visibility="Collapsed" Name="WPFTab9">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="{DynamicResource TabContentMargin}">
+                    <StackPanel Background="Transparent" Margin="8">
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="Bold"
+                                   Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8">
+                            Management consoles
+                        </TextBlock>
+                        <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
+                                   TextWrapping="Wrap" Margin="0,0,0,12">
+                            Opens built-in MMC snap-ins. Some editions (e.g. Windows Home) do not include Group Policy or Local Users and Groups.
+                        </TextBlock>
+                        <Button Name="WPFsys_devmgmt" Content="Device Manager (devmgmt.msc)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFsys_gpedit" Content="Local Group Policy Editor (gpedit.msc)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFsys_lusrmgr" Content="Local Users and Groups (lusrmgr.msc)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

@@ -37,6 +37,10 @@ function Invoke-WPFTab {
     } elseif ($sync.currentTab -eq "Tweaks") {
         # Reset Tweaks tab filter
         Find-TweaksByNameOrDescription -SearchString ""
+    } elseif ($sync.currentTab -eq "Abitti2") {
+        Update-WPFAbittiVersionDisplay
+    } elseif ($sync.currentTab -eq "Troubleshoot") {
+        Update-WPFTroubleshootTabDisplay
     }
 
     # Show search bar in Install and Tweaks tabs

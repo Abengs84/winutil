@@ -52,3 +52,45 @@ function Reset-Device {
         }
     }
 }
+
+function Reset-PnpDeviceInstanceIds {
+    <#
+    .SYNOPSIS
+        Disable/enable cycle for explicit PnP InstanceIds (deduplicated).
+    #>
+    param(
+        [Parameter(Mandatory)]
+        [string[]]$InstanceIds,
+
+        [string]$GroupLabel = 'device list'
+    )
+
+    $unique = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+    foreach ($id in $InstanceIds) {
+        if (-not [string]::IsNullOrWhiteSpace($id)) {
+            [void]$unique.Add($id)
+        }
+    }
+
+    if ($unique.Count -eq 0) {
+        Write-SetupLog "No instance IDs to reset ($GroupLabel)." 'WARN'
+        return
+    }
+
+    Write-SetupLog "Resetting $($unique.Count) PnP device(s) ($GroupLabel)." 'INFO'
+
+    foreach ($id in $unique) {
+        try {
+            $dev = Get-PnpDevice -InstanceId $id -ErrorAction SilentlyContinue
+            $name = if ($dev) { $dev.FriendlyName } else { $id }
+            Write-SetupLog "Disable -> $name" 'INFO'
+            Disable-PnpDevice -InstanceId $id -Confirm:$false -ErrorAction Stop
+            Start-Sleep -Seconds 2
+            Write-SetupLog "Enable -> $name" 'INFO'
+            Enable-PnpDevice -InstanceId $id -Confirm:$false -ErrorAction Stop
+            Write-SetupLog "Reset OK: $name" 'SUCCESS'
+        } catch {
+            Write-SetupLog "Reset failed for $id : $_" 'ERROR'
+        }
+    }
+}
