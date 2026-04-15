@@ -58,6 +58,59 @@ function Invoke-ProvisionOpenMicrosoftStoreUpdates {
     Start-Process -FilePath 'ms-windows-store://downloadsandupdates' -ErrorAction Stop
 }
 
+function Invoke-ProvisionWingetStoreUpgradeAll {
+    <#
+    .SYNOPSIS
+        Upgrade packages from the msstore source (winget equivalent of applying Store updates where indexed).
+    #>
+    Write-SetupLog 'Running winget upgrade --all --source msstore ...' 'INFO'
+    $winget = Get-Command winget -ErrorAction SilentlyContinue
+    if (-not $winget) {
+        throw 'winget not found. Install App Installer from the Microsoft Store.'
+    }
+    $p = Start-Process -FilePath 'winget.exe' -ArgumentList @(
+        'upgrade', '--all',
+        '--source', 'msstore',
+        '--accept-package-agreements',
+        '--accept-source-agreements',
+        '--include-unknown',
+        '--disable-interactivity'
+    ) -Wait -PassThru -NoNewWindow
+    if ($p.ExitCode -notin 0, -1978335189, -1978335188) {
+        Write-SetupLog "winget (msstore) exited with $($p.ExitCode)." 'WARN'
+    }
+    Write-SetupLog 'winget msstore upgrade pass completed.' 'SUCCESS'
+}
+
+function Invoke-ProvisionInstallLenovoCommercialVantage {
+    Write-SetupLog 'Installing Lenovo Commercial Vantage via winget (Microsoft Store source)...' 'INFO'
+    $winget = Get-Command winget -ErrorAction SilentlyContinue
+    if (-not $winget) {
+        throw 'winget not found.'
+    }
+    $p = Start-Process -FilePath 'winget.exe' -ArgumentList @(
+        'install', '--name', 'Lenovo Commercial Vantage',
+        '--source', 'msstore',
+        '--accept-package-agreements',
+        '--accept-source-agreements',
+        '--disable-interactivity'
+    ) -Wait -PassThru -NoNewWindow
+    if ($p.ExitCode -ne 0) {
+        throw "Lenovo Commercial Vantage install failed (exit $($p.ExitCode)). Run: winget search `"Lenovo`" and install the Commercial Vantage listing from msstore, or use the Microsoft Store app."
+    }
+    Write-SetupLog 'Lenovo Commercial Vantage install finished.' 'SUCCESS'
+}
+
+function Invoke-OpenWindowsUpdateSettings {
+    Write-SetupLog 'Opening Windows Update (Settings).' 'INFO'
+    Start-Process -FilePath 'ms-settings:windowsupdate' -ErrorAction Stop
+}
+
+function Invoke-OpenDellWd19FirmwareSupportPage {
+    Write-SetupLog 'Opening Dell support for WD19 / dock firmware utility.' 'INFO'
+    Start-Process 'https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=5x3w3' -ErrorAction Stop
+}
+
 function Invoke-ProvisionCreateLocalUserInteractive {
     Add-Type -AssemblyName Microsoft.VisualBasic -ErrorAction Stop
     Add-Type -AssemblyName System.Windows.Forms -ErrorAction Stop
@@ -88,22 +141,39 @@ function Invoke-ProvisionCreateLocalUserInteractive {
     Write-SetupLog "Creating local user `"$name`" ..." 'INFO'
 
     if ([string]::IsNullOrEmpty($password)) {
-        net user $name /add 2>&1 | ForEach-Object { Write-SetupLog "$_" 'INFO' }
+        net user $name /add 2>&1 | ForEach-Object {
+            $line = "$_".Trim()
+            if ($line.Length -gt 0) { Write-SetupLog $line 'INFO' }
+        }
     } else {
-        net user $name $password /add 2>&1 | ForEach-Object { Write-SetupLog "$_" 'INFO' }
+        net user $name $password /add 2>&1 | ForEach-Object {
+            $line = "$_".Trim()
+            if ($line.Length -gt 0) { Write-SetupLog $line 'INFO' }
+        }
     }
 
     if ($LASTEXITCODE -ne 0) {
         throw "net user /add failed (exit $LASTEXITCODE)."
     }
 
+    Start-Sleep -Milliseconds 400
+
     if ($adminAns -eq [System.Windows.Forms.DialogResult]::Yes) {
         try {
-            Add-LocalGroupMember -SID 'S-1-5-32-544' -Member $name -ErrorAction Stop
-            Write-SetupLog "Added `"$name`" to Administrators (SID)." 'SUCCESS'
+            $userObj = Get-LocalUser -Name $name -ErrorAction Stop
+            $adminGrp = Get-LocalGroup -SID 'S-1-5-32-544' -ErrorAction Stop
+            Add-LocalGroupMember -Group $adminGrp -Member $userObj -ErrorAction Stop
+            Write-SetupLog "Added `"$name`" to Administrators (local group SID S-1-5-32-544)." 'SUCCESS'
         } catch {
-            Write-SetupLog "Add-LocalGroupMember failed, trying net localgroup: $_" 'WARN'
-            net localgroup Administrators $name /add 2>&1 | ForEach-Object { Write-SetupLog "$_" 'INFO' }
+            Write-SetupLog "Add-LocalGroupMember failed: $_; trying WinNT ADSI..." 'WARN'
+            try {
+                $adsGrp = [ADSI]"WinNT://$env:COMPUTERNAME/Administrators,group"
+                $adsGrp.Add("WinNT://$env:COMPUTERNAME/$name,user")
+                Write-SetupLog "Added `"$name`" via ADSI Administrators." 'SUCCESS'
+            } catch {
+                Write-SetupLog "ADSI add failed: $_" 'ERROR'
+                throw
+            }
         }
     }
 }
@@ -117,4 +187,22 @@ function Invoke-ProvisionWindowsTimeResync {
     Start-Service -Name w32time -ErrorAction Stop
     $null = & w32tm.exe /resync /force 2>&1
     Write-SetupLog 'w32tm /resync finished.' 'SUCCESS'
+}
+
+function store {
+    <#
+    .SYNOPSIS
+        Minimal CLI sugar: `store updates --apply` runs winget upgrades for the msstore source (Store apps winget knows about).
+    #>
+    param(
+        [Parameter(Position = 0)]
+        [string]$Action,
+        [Parameter(Position = 1)]
+        [string]$ApplyFlag
+    )
+    if ($Action -eq 'updates' -and $ApplyFlag -eq '--apply') {
+        Invoke-ProvisionWingetStoreUpgradeAll
+        return
+    }
+    throw "Usage: store updates --apply   (runs winget upgrade --all --source msstore)"
 }

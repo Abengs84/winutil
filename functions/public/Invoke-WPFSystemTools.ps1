@@ -30,3 +30,37 @@ function Invoke-WPFSystemToolLusrmgr {
             [System.Windows.MessageBoxImage]::Warning)
     }
 }
+
+function Invoke-WPFSystemToolNetplwiz {
+    try {
+        Start-Process -FilePath 'netplwiz.exe' -ErrorAction Stop
+    } catch {
+        [System.Windows.MessageBox]::Show("Could not start netplwiz: $_", 'System Tools',
+            [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
+    }
+}
+
+function Invoke-WPFOpenDellWd19FirmwareSupport {
+    try {
+        Invoke-OpenDellWd19FirmwareSupportPage
+    } catch {
+        [System.Windows.MessageBox]::Show("Could not open browser: $_", 'System Tools',
+            [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
+    }
+}
+
+function Invoke-WPFRunDellDockFirmwareUtility {
+    Add-Type -AssemblyName System.Windows.Forms -ErrorAction Stop
+    $dlg = New-Object System.Windows.Forms.OpenFileDialog
+    $dlg.Filter = 'Executable (*.exe)|*.exe|All files (*.*)|*.*'
+    $dlg.Title = 'Select Dell Dock Firmware Update Utility (download from Dell first)'
+    if ($dlg.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) {
+        return
+    }
+    try {
+        Start-Process -FilePath $dlg.FileName -Verb RunAs -ErrorAction Stop
+    } catch {
+        [System.Windows.MessageBox]::Show("Could not start utility: $_", 'System Tools',
+            [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Warning)
+    }
+}

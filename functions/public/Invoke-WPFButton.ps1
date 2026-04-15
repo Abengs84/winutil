@@ -79,6 +79,8 @@ function Invoke-WPFButton {
         "WPFProvisionDisableTipsButton" { Invoke-WPFProvisionDisableTipsAction }
         "WPFProvisionWingetUpgradeButton" { Invoke-WPFProvisionWingetUpgradeAction }
         "WPFProvisionStoreUpdatesButton" { Invoke-WPFProvisionStoreUpdatesAction }
+        "WPFProvisionWingetStoreUpgradeButton" { Invoke-WPFProvisionWingetStoreUpgradeAction }
+        "WPFProvisionLenovoVantageButton" { Invoke-WPFProvisionLenovoCommercialVantageAction }
         "WPFProvisionNewUserButton" { Invoke-WPFProvisionCreateUserAction }
         "WPFProvisionTimeResyncButton" { Invoke-WPFProvisionTimeResyncAction }
         "WPFtrouble_scan" { Update-WPFTroubleshootTabDisplay }
@@ -91,5 +93,9 @@ function Invoke-WPFButton {
         "WPFsys_devmgmt" { Invoke-WPFSystemToolDeviceManager }
         "WPFsys_gpedit" { Invoke-WPFSystemToolGpedit }
         "WPFsys_lusrmgr" { Invoke-WPFSystemToolLusrmgr }
+        "WPFsys_netplwiz" { Invoke-WPFSystemToolNetplwiz }
+        "WPFsys_dellwd19_page" { Invoke-WPFOpenDellWd19FirmwareSupport }
+        "WPFsys_dellwd19_run" { Invoke-WPFRunDellDockFirmwareUtility }
+        "WPFUpdatesOpenSettings" { Invoke-WPFUpdatesOpenSettingsAction }
     }
 }

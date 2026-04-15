@@ -26,7 +26,7 @@ $InitialSessionState.Variables.Add($offlineVar)
 
 # Get every private function and add them to the session state
 $functions = Get-ChildItem function:\ | Where-Object {
-    $_.Name -imatch 'winutil|WPF|Abitti|Write-SetupLog|Reset-Device|Reset-Pnp|VivoBook|ThinkPad|SysadminProvisioning|Get-Abitti|Update-WPFAbitti|Get-Troubleshoot|Invoke-Provision|Provision'
+    $_.Name -imatch 'winutil|WPF|Abitti|Write-SetupLog|Reset-Device|Reset-Pnp|VivoBook|ThinkPad|SysadminProvisioning|Get-Abitti|Update-WPFAbitti|Get-Troubleshoot|Invoke-Provision|Provision|Invoke-Open'
 }
 foreach ($function in $functions) {
     $functionDefinition = Get-Content function:\$($function.name)
@@ -73,7 +73,6 @@ $sync.configs.applications.PSObject.Properties | ForEach-Object {
 Set-Preferences
 
 if ($PARAM_NOUI) {
-    Show-CTTLogo
     if ($PARAM_CONFIG -and -not [string]::IsNullOrWhiteSpace($PARAM_CONFIG)) {
         Write-Host "Running config file tasks..."
         Invoke-WPFImpex -type "import" -Config $PARAM_CONFIG
@@ -245,9 +244,6 @@ Invoke-WPFRunspace -ScriptBlock {
 #===========================================================================
 # Setup and Show the Form
 #===========================================================================
-
-# Print the logo
-Show-CTTLogo
 
 # Progress bar in taskbaritem > Set-WinUtilProgressbar
 $sync["Form"].TaskbarItemInfo = New-Object System.Windows.Shell.TaskbarItemInfo

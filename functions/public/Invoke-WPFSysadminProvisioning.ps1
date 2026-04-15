@@ -12,23 +12,45 @@ function Invoke-WPFInstallAbittiCandidate {
     Invoke-WPFRunspace -ScriptBlock {
         try {
             $sync.ProcessRunning = $true
-            Show-WPFInstallAppBusy -text 'Installing Abitti Candidate...'
+            Invoke-WPFUIThread -ScriptBlock {
+                Set-WinUtilProgressbar -label 'Installing Abitti Candidate...' -percent 50
+            }
             Install-AbittiCandidate
-            Hide-WPFInstallAppBusy
             Invoke-WPFUIThread -ScriptBlock {
                 Set-WinUtilTaskbaritem -state 'None' -overlay 'checkmark'
+                $sync.progressBarTextBlock.Text = ''
+                $sync.progressBarTextBlock.ToolTip = ''
+                $sync.ProgressBar.Value = 0
                 if ($sync.WPFAbittiVersionDisplay) {
                     try {
                         $sync.WPFAbittiVersionDisplay.Text = Get-AbittiVersionDisplayString
                     } catch { }
                 }
+                try {
+                    $sync.Form.Activate() | Out-Null
+                    $sync.Form.Focus() | Out-Null
+                } catch { }
             }
         } catch {
-            Hide-WPFInstallAppBusy
             Write-Host "Abitti install error: $_"
-            Invoke-WPFUIThread -ScriptBlock { Set-WinUtilTaskbaritem -state 'Error' -overlay 'warning' }
+            Invoke-WPFUIThread -ScriptBlock {
+                Set-WinUtilTaskbaritem -state 'Error' -overlay 'warning'
+                $sync.progressBarTextBlock.Text = ''
+                $sync.progressBarTextBlock.ToolTip = ''
+                $sync.ProgressBar.Value = 0
+                Hide-WPFInstallAppBusy
+                try {
+                    $sync.Form.Activate() | Out-Null
+                } catch { }
+            }
         } finally {
             $sync.ProcessRunning = $false
+            Invoke-WPFUIThread -ScriptBlock {
+                Hide-WPFInstallAppBusy
+                try {
+                    $sync.Form.Activate() | Out-Null
+                } catch { }
+            }
         }
     } | Out-Null
 }

@@ -1017,7 +1017,7 @@
                     Background="{DynamicResource ButtonTweaksBackgroundColor}" Foreground="{DynamicResource ButtonTweaksForegroundColor}" FontWeight="Bold" Name="WPFTab7BT">
                     <ToggleButton.Content>
                         <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonTweaksForegroundColor}">
-                            <Underline>A</Underline>britti2
+                            <Underline>A</Underline>bitti2
                         </TextBlock>
                     </ToggleButton.Content>
                 </ToggleButton>
@@ -1030,9 +1030,9 @@
                     </ToggleButton.Content>
                 </ToggleButton>
                 <ToggleButton Margin="0,0,5,0" Height="{DynamicResource TabButtonHeight}" Width="Auto" MinWidth="{DynamicResource TabButtonWidth}"
-                    Background="{DynamicResource ButtonInstallBackgroundColor}" Foreground="White" FontWeight="Bold" Name="WPFTab9BT">
+                    Background="{DynamicResource ButtonConfigBackgroundColor}" Foreground="{DynamicResource ButtonConfigForegroundColor}" FontWeight="Bold" Name="WPFTab9BT">
                     <ToggleButton.Content>
-                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="White">
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonConfigForegroundColor}">
                             S<Underline>y</Underline>stem Tools
                         </TextBlock>
                     </ToggleButton.Content>
@@ -1395,9 +1395,18 @@
                             </Border>
                         </Grid>
 
-                        <!-- Future Implementation: Add Windows Version to updates panel -->
-                        <Grid Name="updatespanel" Grid.Row="1" Background="Transparent">
-                        </Grid>
+                        <!-- Windows Update shortcut -->
+                        <StackPanel Grid.Row="1" Margin="10,16,10,10" Orientation="Vertical">
+                            <TextBlock FontWeight="Bold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,0,0,6"
+                                       TextWrapping="Wrap" Text="Check for updates"/>
+                            <TextBlock Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8"
+                                       FontSize="{DynamicResource FontSize}">
+                                Opens the Windows Update page in Settings (same as Windows GUI update check).
+                            </TextBlock>
+                            <Button Name="WPFUpdatesOpenSettings" Content="Open Windows Update in Settings"
+                                    FontSize="{DynamicResource ConfigTabButtonFontSize}" Padding="10" HorizontalAlignment="Left"
+                                    MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        </StackPanel>
                     </Grid>
                 </ScrollViewer>
             </TabItem>
@@ -1732,6 +1741,10 @@
                                     Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                             <Button Name="WPFProvisionStoreUpdatesButton" Content="Open Microsoft Store (Downloads and updates)"
                                     Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionWingetStoreUpgradeButton" Content="Apply Store app updates (winget --source msstore)"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                            <Button Name="WPFProvisionLenovoVantageButton" Content="Install Lenovo Commercial Vantage (winget / Store)"
+                                    Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                             <Button Name="WPFProvisionNewUserButton" Content="Create local user (prompts for name, password, admin)"
                                     Margin="0,4" HorizontalAlignment="Left" MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                             <Button Name="WPFProvisionTimeResyncButton" Content="Fix time: recycle Windows Time service and resync"
@@ -1847,6 +1860,18 @@
                         <Button Name="WPFsys_gpedit" Content="Local Group Policy Editor (gpedit.msc)" Margin="0,4" HorizontalAlignment="Left"
                                 MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                         <Button Name="WPFsys_lusrmgr" Content="Local Users and Groups (lusrmgr.msc)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFsys_netplwiz" Content="Legacy user accounts (netplwiz)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <TextBlock FontWeight="SemiBold" Foreground="{DynamicResource MainForegroundColor}" Margin="0,16,0,4"
+                                   TextWrapping="Wrap" Text="Dell dock firmware (WD19 / WD22 series)"/>
+                        <TextBlock Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8"
+                                   FontSize="{DynamicResource FontSize}">
+                            Download the official Dell Dock Firmware Update Utility from Dell, then run the EXE you saved (often requires admin).
+                        </TextBlock>
+                        <Button Name="WPFsys_dellwd19_page" Content="Open Dell WD19/WD22 firmware utility download (Dell Support)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFsys_dellwd19_run" Content="Run Dell dock firmware EXE (pick file)..." Margin="0,4" HorizontalAlignment="Left"
                                 MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                     </StackPanel>
                 </ScrollViewer>
