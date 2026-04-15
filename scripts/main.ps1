@@ -287,11 +287,11 @@ $commonKeyEvents = {
             "T" { Invoke-WPFButton "WPFTab2BT"; $keyEventArgs.Handled = $true } # Navigate to Tweaks tab
             "C" { Invoke-WPFButton "WPFTab3BT"; $keyEventArgs.Handled = $true } # Navigate to Config tab
             "U" { Invoke-WPFButton "WPFTab4BT"; $keyEventArgs.Handled = $true } # Navigate to Updates tab
-            "W" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Navigate to Win11ISO tab
-            "P" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Provision / sysadmin tab
-            "A" { Invoke-WPFButton "WPFTab7BT"; $keyEventArgs.Handled = $true } # Abitti2 tab
-            "R" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # Troubleshoot tab
-            "Y" { Invoke-WPFButton "WPFTab9BT"; $keyEventArgs.Handled = $true } # System Tools tab (sYstem)
+            "P" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Provision tab
+            "A" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Abitti2 tab
+            "R" { Invoke-WPFButton "WPFTab7BT"; $keyEventArgs.Handled = $true } # Troubleshoot tab
+            "Y" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # System Tools tab (sYstem)
+            "D" { Invoke-WPFButton "WPFTab9BT"; $keyEventArgs.Handled = $true } # Dell dock tab
         }
     }
     # Handle Ctrl key combinations for specific actions
@@ -547,61 +547,6 @@ $sync["FontScalingApplyButton"].Add_Click({
     Invoke-WinUtilFontScaling -ScaleFactor $scaleFactor
     Invoke-WPFPopup -Action "Hide" -Popups @("FontScaling")
 })
-
-# ── Win11ISO Tab button handlers ──────────────────────────────────────────────
-
-$sync["WPFTab5BT"].Add_Click({
-    $sync["Form"].Dispatcher.BeginInvoke([System.Windows.Threading.DispatcherPriority]::Background, [action]{ Invoke-WinUtilISOCheckExistingWork }) | Out-Null
-})
-
-$sync["WPFWin11ISOBrowseButton"].Add_Click({
-    Write-Debug "WPFWin11ISOBrowseButton clicked"
-    Invoke-WinUtilISOBrowse
-})
-
-$sync["WPFWin11ISODownloadLink"].Add_Click({
-    Write-Debug "WPFWin11ISODownloadLink clicked"
-    Start-Process "https://www.microsoft.com/software-download/windows11"
-})
-
-$sync["WPFWin11ISOMountButton"].Add_Click({
-    Write-Debug "WPFWin11ISOMountButton clicked"
-    Invoke-WinUtilISOMountAndVerify
-})
-
-$sync["WPFWin11ISOModifyButton"].Add_Click({
-    Write-Debug "WPFWin11ISOModifyButton clicked"
-    Invoke-WinUtilISOModify
-})
-
-$sync["WPFWin11ISOChooseISOButton"].Add_Click({
-    Write-Debug "WPFWin11ISOChooseISOButton clicked"
-    $sync["WPFWin11ISOOptionUSB"].Visibility = "Collapsed"
-    Invoke-WinUtilISOExport
-})
-
-$sync["WPFWin11ISOChooseUSBButton"].Add_Click({
-    Write-Debug "WPFWin11ISOChooseUSBButton clicked"
-    $sync["WPFWin11ISOOptionUSB"].Visibility = "Visible"
-    Invoke-WinUtilISORefreshUSBDrives
-})
-
-$sync["WPFWin11ISORefreshUSBButton"].Add_Click({
-    Write-Debug "WPFWin11ISORefreshUSBButton clicked"
-    Invoke-WinUtilISORefreshUSBDrives
-})
-
-$sync["WPFWin11ISOWriteUSBButton"].Add_Click({
-    Write-Debug "WPFWin11ISOWriteUSBButton clicked"
-    Invoke-WinUtilISOWriteUSB
-})
-
-$sync["WPFWin11ISOCleanResetButton"].Add_Click({
-    Write-Debug "WPFWin11ISOCleanResetButton clicked"
-    Invoke-WinUtilISOCleanAndReset
-})
-
-# ──────────────────────────────────────────────────────────────────────────────
 
 $sync["Form"].ShowDialog() | out-null
 Stop-Transcript
