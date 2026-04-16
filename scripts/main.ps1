@@ -258,16 +258,6 @@ $sync["Form"].Add_Closing({
     [System.GC]::Collect()
 })
 
-# Attach the event handler to the Click event
-$sync.SearchBarClearButton.Add_Click({
-    $sync.SearchBar.Text = ""
-    $sync.SearchBarClearButton.Visibility = "Collapsed"
-
-    # Focus the search bar after clearing the text
-    $sync.SearchBar.Focus()
-    $sync.SearchBar.SelectAll()
-})
-
 # add some shortcuts for people that don't like clicking
 $commonKeyEvents = {
     # Prevent shortcuts from executing if a process is already running
@@ -275,10 +265,6 @@ $commonKeyEvents = {
         return
     }
 
-    # Handle key presses of single keys
-    switch ($_.Key) {
-        "Escape" { $sync.SearchBar.Text = "" }
-    }
     # Handle Alt key combinations for navigation
     if ($_.KeyboardDevice.Modifiers -eq "Alt") {
         $keyEventArgs = $_
@@ -286,18 +272,16 @@ $commonKeyEvents = {
             "I" { Invoke-WPFButton "WPFTab1BT"; $keyEventArgs.Handled = $true } # Navigate to Install tab and suppress Windows Warning Sound
             "T" { Invoke-WPFButton "WPFTab2BT"; $keyEventArgs.Handled = $true } # Navigate to Tweaks tab
             "C" { Invoke-WPFButton "WPFTab3BT"; $keyEventArgs.Handled = $true } # Navigate to Config tab
-            "U" { Invoke-WPFButton "WPFTab4BT"; $keyEventArgs.Handled = $true } # Navigate to Updates tab
-            "P" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Provision tab
-            "A" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Abitti2 tab
-            "R" { Invoke-WPFButton "WPFTab7BT"; $keyEventArgs.Handled = $true } # Troubleshoot tab
-            "Y" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # System Tools tab (sYstem)
-            "D" { Invoke-WPFButton "WPFTab9BT"; $keyEventArgs.Handled = $true } # Dell dock tab
+            "P" { Invoke-WPFButton "WPFTab4BT"; $keyEventArgs.Handled = $true } # Provision tab
+            "A" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Abitti2 tab
+            "R" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Troubleshoot tab
+            "Y" { Invoke-WPFButton "WPFTab7BT"; $keyEventArgs.Handled = $true } # System Tools tab (sYstem)
+            "D" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # Dell dock tab
         }
     }
     # Handle Ctrl key combinations for specific actions
     if ($_.KeyboardDevice.Modifiers -eq "Ctrl") {
         switch ($_.Key) {
-            "F" { $sync.SearchBar.Focus() } # Focus on the search bar
             "Q" { $this.Close() } # Close the application
         }
     }
@@ -395,36 +379,6 @@ $sync["Form"].Add_ContentRendered({
 
 })
 
-# The SearchBarTimer is used to delay the search operation until the user has stopped typing for a short period
-# This prevents the ui from stuttering when the user types quickly as it dosnt need to update the ui for every keystroke
-
-$searchBarTimer = New-Object System.Windows.Threading.DispatcherTimer
-$searchBarTimer.Interval = [TimeSpan]::FromMilliseconds(300)
-$searchBarTimer.IsEnabled = $false
-
-$searchBarTimer.add_Tick({
-    $searchBarTimer.Stop()
-    switch ($sync.currentTab) {
-        "Install" {
-            Find-AppsByNameOrDescription -SearchString $sync.SearchBar.Text
-        }
-        "Tweaks" {
-            Find-TweaksByNameOrDescription -SearchString $sync.SearchBar.Text
-        }
-    }
-})
-$sync["SearchBar"].Add_TextChanged({
-    if ($sync.SearchBar.Text -ne "") {
-        $sync.SearchBarClearButton.Visibility = "Visible"
-    } else {
-        $sync.SearchBarClearButton.Visibility = "Collapsed"
-    }
-    if ($searchBarTimer.IsEnabled) {
-        $searchBarTimer.Stop()
-    }
-    $searchBarTimer.Start()
-})
-
 $sync["Form"].Add_Loaded({
     param($e)
     $sync.Form.MinWidth = "1000"
@@ -432,10 +386,6 @@ $sync["Form"].Add_Loaded({
     $sync["Form"].MaxHeight = [Double]::PositiveInfinity
     Update-WPFAbittiVersionDisplay
 })
-
-$NavLogoPanel = $sync["Form"].FindName("NavLogoPanel")
-$NavLogoPanel.Children.Add((Invoke-WinUtilAssets -Type "logo" -Size 25)) | Out-Null
-
 
 if (Test-Path "$winutildir\logo.ico") {
     $sync["logorender"] = "$winutildir\logo.ico"
