@@ -1,0 +1,3 @@
+# Windows network diagnostics. Core commands work with stdlib + PowerShell.
+# Packet capture (capture / diagnose --capture) requires Npcap +:
+scapy>=2.5.0

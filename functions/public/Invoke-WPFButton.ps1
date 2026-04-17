@@ -96,5 +96,13 @@ function Invoke-WPFButton {
         "WPFsys_lenovo_hybrid_dock_download" { Invoke-WPFInstallLenovoHybridDockFirmwareTool }
         "WPFsys_lenovo_hybrid_dock_run" { Invoke-WPFRunLenovoHybridDockFirmwareFromDownloads }
         "WPFUpdatesOpenSettings" { Invoke-WPFUpdatesOpenSettingsAction }
+        "WPFnetdiag_list" { Invoke-WPFNetdiagListIfaces }
+        "WPFnetdiag_diagnose" { Invoke-WPFNetdiagDiagnose }
+        "WPFnetdiag_diagnose_quick" { Invoke-WPFNetdiagDiagnoseQuick }
+        "WPFnetdiag_renew" { Invoke-WPFNetdiagRenew }
+        "WPFnetdiag_capture" { Invoke-WPFNetdiagCapture }
+        "WPFnetdiag_export" { Invoke-WPFNetdiagExport }
+        "WPFnetdiag_compare" { Invoke-WPFNetdiagCompare }
+        "WPFnetdiag_linkmon" { Invoke-WPFNetdiagLinkMon }
     }
 }

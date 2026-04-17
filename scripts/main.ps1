@@ -26,7 +26,7 @@ $InitialSessionState.Variables.Add($offlineVar)
 
 # Get every private function and add them to the session state
 $functions = Get-ChildItem function:\ | Where-Object {
-    $_.Name -imatch 'winutil|WPF|Abitti|Write-SetupLog|Reset-Device|Reset-Pnp|VivoBook|ThinkPad|SysadminProvisioning|Get-Abitti|Update-WPFAbitti|Get-Troubleshoot|Invoke-Provision|Provision|Invoke-Open'
+    $_.Name -imatch 'winutil|WPF|Abitti|Write-SetupLog|Reset-Device|Reset-Pnp|VivoBook|ThinkPad|SysadminProvisioning|Get-Abitti|Update-WPFAbitti|Get-Troubleshoot|Invoke-Provision|Provision|Invoke-Open|Netdiag|WinUtilNetDiag'
 }
 foreach ($function in $functions) {
     $functionDefinition = Get-Content function:\$($function.name)
@@ -277,6 +277,7 @@ $commonKeyEvents = {
             "R" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Troubleshoot tab
             "Y" { Invoke-WPFButton "WPFTab7BT"; $keyEventArgs.Handled = $true } # System Tools tab (sYstem)
             "D" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # Dock tab
+            "N" { Invoke-WPFButton "WPFTab9BT"; $keyEventArgs.Handled = $true } # Network tab
         }
     }
     # Handle Ctrl key combinations for specific actions

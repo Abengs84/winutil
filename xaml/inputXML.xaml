@@ -406,7 +406,7 @@
             <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundColor}"/>
             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundColor}"/>
             <Setter Property="Height" Value="{DynamicResource ButtonHeight}"/>
-            <!-- MinWidth only: fixed Width (200) clipped long labels on Provision / System Tools / Dock / Abitti / Troubleshoot -->
+            <!-- MinWidth only: fixed Width (200) clipped long labels on Provision / System Tools / Dock / Network / Abitti / Troubleshoot -->
             <Setter Property="MinWidth" Value="{DynamicResource ButtonWidth}"/>
             <Setter Property="FontSize" Value="{DynamicResource ButtonFontSize}"/>
             <Setter Property="FontFamily" Value="{DynamicResource FontFamily}"/>
@@ -1160,6 +1160,14 @@
                         </TextBlock>
                     </ToggleButton.Content>
                 </ToggleButton>
+                <ToggleButton Margin="0,0,5,5" Height="{DynamicResource TabButtonHeight}" Width="Auto" MinWidth="{DynamicResource TabButtonWidth}"
+                    Background="{DynamicResource ButtonInstallBackgroundColor}" Foreground="white" FontWeight="Bold" Name="WPFTab9BT">
+                    <ToggleButton.Content>
+                        <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonInstallForegroundColor}">
+                            <Underline>N</Underline>etwork
+                        </TextBlock>
+                    </ToggleButton.Content>
+                </ToggleButton>
             </WrapPanel>
         </DockPanel>
 
@@ -1417,6 +1425,37 @@
                         <Button Name="WPFsys_lenovo_hybrid_dock_download" Content="Download: Lenovo Hybrid USB-C Dock firmware tool (to Downloads)" Margin="0,4" HorizontalAlignment="Left"
                                 MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                         <Button Name="WPFsys_lenovo_hybrid_dock_run" Content="Run: Lenovo dock firmware tool (search Downloads)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+            <TabItem Header="Network" Visibility="Collapsed" Name="WPFTab9">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="{DynamicResource TabContentMargin}">
+                    <StackPanel Background="Transparent" Margin="8">
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="Bold"
+                                   Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8">
+                            Network diagnostics (Python CLI)
+                        </TextBlock>
+                        <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
+                                   TextWrapping="Wrap" Margin="0,0,0,12">
+                            Requires Python 3 on PATH. From repo: pip install -r tools\netdiag\requirements.txt (scapy + Npcap for packet capture).
+                            Opens a new console for output. Run WinUtil as Administrator for ipconfig /renew and live capture.
+                        </TextBlock>
+                        <Button Name="WPFnetdiag_list" Content="List interfaces (netdiag list-ifaces)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFnetdiag_diagnose_quick" Content="Diagnose: collect + DHCP renew + warnings (no capture)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFnetdiag_diagnose" Content="Diagnose: full (+ ~10s packet capture if scapy/Npcap OK)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFnetdiag_renew" Content="DHCP: release + renew only" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFnetdiag_capture" Content="Capture: ~10s DHCP/VLAN summary" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFnetdiag_export" Content="Export: snapshot JSON to Documents" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFnetdiag_compare" Content="Compare: two snapshot JSON files..." Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFnetdiag_linkmon" Content="Link monitor: on link-up, renew + capture" Margin="0,4" HorizontalAlignment="Left"
                                 MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                     </StackPanel>
                 </ScrollViewer>
