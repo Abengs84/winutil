@@ -63,4 +63,3 @@ docs/resources/
 
 .specstory/
 __pycache__/
-*.pyc
