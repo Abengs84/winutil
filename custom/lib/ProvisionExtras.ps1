@@ -107,8 +107,42 @@ function Invoke-OpenWindowsUpdateSettings {
 }
 
 function Invoke-OpenDellWd19FirmwareSupportPage {
-    Write-SetupLog 'Opening Dell support for WD19 / dock firmware utility.' 'INFO'
-    Start-Process 'https://www.dell.com/support/home/en-us/drivers/driversdetails?driverid=5x3w3' -ErrorAction Stop
+    <#
+ Opens Dell Drivers & Downloads for a fixed service tag. On the site, choose Windows 11
+        in the operating system list, then use category / search to find Dock or Firmware utilities.
+    #>
+    $st = 'BRPKD44'
+    $url = "https://www.dell.com/support/home/en-us/product-support/servicetag/$($st.ToLowerInvariant())/drivers"
+    Write-SetupLog "Opening Dell drivers for service tag $st (select Windows 11 on the site if prompted)." 'INFO'
+    Start-Process $url -ErrorAction Stop
+}
+
+function Invoke-DownloadLenovoThinkPadHybridUsbCDockFirmwareTool {
+    <#
+        .SYNOPSIS
+ Downloads the ThinkPad Hybrid USB-C with USB-A Dock (40AF) firmware update tool from Lenovo CDN.
+        .NOTES
+            File name/version may change; update $DownloadUrl if Lenovo publishes a newer build.
+            Support reference: https://pcsupport.lenovo.com/us/en/downloads/ds504448-firmware-update-tool-for-windows-7-10-32-bit-64-bit-thinkpad-hybrid-usb-c-with-usb-a-dock
+    #>
+    param(
+        [string]$DownloadUrl = 'https://download.lenovo.com/pccbbs/mobiles/fhybd1042_1.exe'
+    )
+
+    $destDir = [Environment]::GetFolderPath([Environment+SpecialFolder]::UserDownloads)
+    if (-not (Test-Path -LiteralPath $destDir)) {
+        throw "Downloads folder not found: $destDir"
+    }
+    $leaf = [System.IO.Path]::GetFileName(($DownloadUrl -split '\?')[0])
+    $dest = Join-Path $destDir $leaf
+
+    Write-SetupLog "Downloading Lenovo Hybrid USB-C Dock firmware tool to `"$dest`" ..." 'INFO'
+    Invoke-WebRequest -Uri $DownloadUrl -OutFile $dest -UseBasicParsing
+    if (-not (Test-Path -LiteralPath $dest)) {
+        throw 'Download finished but file is missing.'
+    }
+    Write-SetupLog 'Lenovo dock firmware tool download finished.' 'SUCCESS'
+    return $dest
 }
 
 function Invoke-ProvisionCreateLocalUserInteractive {

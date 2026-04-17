@@ -91,8 +91,10 @@ function Invoke-WPFButton {
         "WPFsys_gpedit" { Invoke-WPFSystemToolGpedit }
         "WPFsys_lusrmgr" { Invoke-WPFSystemToolLusrmgr }
         "WPFsys_netplwiz" { Invoke-WPFSystemToolNetplwiz }
-        "WPFsys_dellwd19_page" { Invoke-WPFOpenDellWd19FirmwareSupport }
-        "WPFsys_dellwd19_run" { Invoke-WPFRunDellDockFirmwareUtility }
+        "WPFsys_dell_dock_download" { Invoke-WPFOpenDellWd19FirmwareSupport }
+        "WPFsys_dell_dock_run" { Invoke-WPFRunDellDockFirmwareUtility }
+        "WPFsys_lenovo_hybrid_dock_download" { Invoke-WPFInstallLenovoHybridDockFirmwareTool }
+        "WPFsys_lenovo_hybrid_dock_run" { Invoke-WPFRunLenovoHybridDockFirmwareFromDownloads }
         "WPFUpdatesOpenSettings" { Invoke-WPFUpdatesOpenSettingsAction }
     }
 }

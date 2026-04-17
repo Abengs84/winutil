@@ -33,12 +33,24 @@ function Get-AbittiInstalledDetails {
     return $null
 }
 
+function Format-AbittiVersionForDisplay {
+    param([string]$Version)
+    if ([string]::IsNullOrWhiteSpace($Version)) {
+        return $Version
+    }
+    # Uninstall registry often shows 1.12.4.0 while release notes / site show 1.12.4
+    if ($Version -match '^(\d+\.\d+\.\d+)\.0$') {
+        return $Matches[1]
+    }
+    return $Version
+}
+
 function Get-AbittiVersionDisplayString {
     $d = Get-AbittiInstalledDetails
     if (-not $d) {
         return 'Not installed'
     }
-    $ver = $d.DisplayVersion
+    $ver = Format-AbittiVersionForDisplay $d.DisplayVersion
     if ([string]::IsNullOrWhiteSpace($ver)) {
         $ver = 'unknown'
     }

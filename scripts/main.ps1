@@ -276,7 +276,7 @@ $commonKeyEvents = {
             "A" { Invoke-WPFButton "WPFTab5BT"; $keyEventArgs.Handled = $true } # Abitti2 tab
             "R" { Invoke-WPFButton "WPFTab6BT"; $keyEventArgs.Handled = $true } # Troubleshoot tab
             "Y" { Invoke-WPFButton "WPFTab7BT"; $keyEventArgs.Handled = $true } # System Tools tab (sYstem)
-            "D" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # Dell dock tab
+            "D" { Invoke-WPFButton "WPFTab8BT"; $keyEventArgs.Handled = $true } # Dock tab
         }
     }
     # Handle Ctrl key combinations for specific actions

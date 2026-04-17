@@ -406,7 +406,7 @@
             <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundColor}"/>
             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundColor}"/>
             <Setter Property="Height" Value="{DynamicResource ButtonHeight}"/>
-            <!-- MinWidth only: fixed Width (200) clipped long labels on Provision / System Tools / Dell / Abitti / Troubleshoot -->
+            <!-- MinWidth only: fixed Width (200) clipped long labels on Provision / System Tools / Dock / Abitti / Troubleshoot -->
             <Setter Property="MinWidth" Value="{DynamicResource ButtonWidth}"/>
             <Setter Property="FontSize" Value="{DynamicResource ButtonFontSize}"/>
             <Setter Property="FontFamily" Value="{DynamicResource FontFamily}"/>
@@ -1156,7 +1156,7 @@
                     Background="{DynamicResource ButtonWin11ISOBackgroundColor}" Foreground="{DynamicResource ButtonWin11ISOForegroundColor}" FontWeight="Bold" Name="WPFTab8BT">
                     <ToggleButton.Content>
                         <TextBlock FontSize="{DynamicResource TabButtonFontSize}" Background="Transparent" Foreground="{DynamicResource ButtonWin11ISOForegroundColor}">
-                            <Underline>D</Underline>ell dock
+                            <Underline>D</Underline>ock
                         </TextBlock>
                     </ToggleButton.Content>
                 </ToggleButton>
@@ -1389,20 +1389,34 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-            <TabItem Header="Dell dock" Visibility="Collapsed" Name="WPFTab8">
+            <TabItem Header="Dock" Visibility="Collapsed" Name="WPFTab8">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="{DynamicResource TabContentMargin}">
                     <StackPanel Background="Transparent" Margin="8">
                         <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="Bold"
                                    Foreground="{DynamicResource MainForegroundColor}" TextWrapping="Wrap" Margin="0,0,0,8">
-                            Dell dock firmware (WD19 / WD22 series)
+                            Dock firmware (Dell WD19 / WD22 and Lenovo Hybrid USB-C)
                         </TextBlock>
                         <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
                                    TextWrapping="Wrap" Margin="0,0,0,12">
-                            Download the official Dell Dock Firmware Update Utility from Dell Support, then run the EXE you saved (often requires admin).
+                            Dell: opens Drivers &amp; Downloads for service tag BRPKD44. On the Dell site, choose Windows 11 if asked, then find Dock / Firmware for the latest utility.
+                            Run searches your Downloads folder (e.g. H&#xE4;mtade filer) for a matching Dell dock updater EXE.
                         </TextBlock>
-                        <Button Name="WPFsys_dellwd19_page" Content="Open Dell WD19/WD22 firmware utility download (Dell Support)" Margin="0,4" HorizontalAlignment="Left"
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource MainForegroundColor}" Margin="0,8,0,4" Text="Dell"/>
+                        <Button Name="WPFsys_dell_dock_download" Content="Download: Dell drivers page (service tag BRPKD44 - then pick Windows 11)" Margin="0,4" HorizontalAlignment="Left"
                                 MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
-                        <Button Name="WPFsys_dellwd19_run" Content="Run Dell dock firmware EXE (pick file)..." Margin="0,4" HorizontalAlignment="Left"
+                        <Button Name="WPFsys_dell_dock_run" Content="Run: Dell dock firmware updater (search Downloads)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <TextBlock FontSize="{DynamicResource FontSize}" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource MainForegroundColor}" Margin="0,16,0,4"
+                                   TextWrapping="Wrap" Text="Lenovo - ThinkPad Hybrid USB-C with USB-A Dock (40AF)"/>
+                        <TextBlock FontSize="{DynamicResource FontSize}" Foreground="{DynamicResource MainForegroundColor}"
+                                   TextWrapping="Wrap" Margin="0,0,0,8">
+                            Firmware update tool from Lenovo (same family as support download ds504448). Run searches Downloads for the tool EXE.
+                        </TextBlock>
+                        <Button Name="WPFsys_lenovo_hybrid_dock_download" Content="Download: Lenovo Hybrid USB-C Dock firmware tool (to Downloads)" Margin="0,4" HorizontalAlignment="Left"
+                                MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
+                        <Button Name="WPFsys_lenovo_hybrid_dock_run" Content="Run: Lenovo dock firmware tool (search Downloads)" Margin="0,4" HorizontalAlignment="Left"
                                 MinWidth="{DynamicResource ButtonWidth}" Height="{DynamicResource ButtonHeight}"/>
                     </StackPanel>
                 </ScrollViewer>
