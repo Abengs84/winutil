@@ -1,14 +1,30 @@
-#Requires -RunAsAdministrator
 [CmdletBinding()]
 param(
     [string]$DownloadUrl = 'https://dl.abitti.fi/AbittiCandidateInstaller.msi',
     [string]$InstallerPath = $(Join-Path $env:TEMP 'AbittiCandidateInstaller.msi'),
-    [string]$MsiLogPath = $(Join-Path $env:TEMP 'abitti-msi.log')
+    [string]$MsiLogPath = $(Join-Path $env:TEMP 'abitti-msi.log'),
+    [string]$QuickScriptUrl = 'https://raw.githubusercontent.com/Abengs84/winutil/main/abitti-quick-install.ps1'
 )
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+# Relaunch elevated when command is started from non-admin terminal.
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).
+    IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if (-not $isAdmin) {
+    Write-Host '[Abitti] Admin rights required. Requesting elevation...'
+    $cmd = @"
+`$ProgressPreference='SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; irm '$QuickScriptUrl' | iex
+"@
+    Start-Process -FilePath 'powershell.exe' -ArgumentList @(
+        '-ExecutionPolicy', 'Bypass',
+        '-NoProfile',
+        '-Command', $cmd
+    ) -Verb RunAs | Out-Null
+    return
+}
 
 Write-Host '[Abitti] Starting quick install...'
 
