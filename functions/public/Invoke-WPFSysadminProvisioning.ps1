@@ -21,51 +21,48 @@ function Invoke-WPFInstallAbittiCandidate {
         Write-Host "Could not initialize Abitti log file: $($_.Exception.Message)"
     }
 
-    Invoke-WPFRunspace -ScriptBlock {
-        try {
-            $sync.ProcessRunning = $true
-            Invoke-WPFUIThread -ScriptBlock {
-                Set-WinUtilProgressbar -label 'Installing Abitti Candidate...' -percent 50
-            }
-            Install-AbittiCandidate
-            Invoke-WPFUIThread -ScriptBlock {
-                Set-WinUtilTaskbaritem -state 'None' -overlay 'checkmark'
-                $sync.progressBarTextBlock.Text = ''
-                $sync.progressBarTextBlock.ToolTip = ''
-                $sync.ProgressBar.Value = 0
-                if ($sync.WPFAbittiVersionDisplay) {
-                    try {
-                        $sync.WPFAbittiVersionDisplay.Text = Get-AbittiVersionDisplayString
-                    } catch { }
-                }
-                try {
-                    $sync.Form.Activate() | Out-Null
-                    $sync.Form.Focus() | Out-Null
-                } catch { }
-            }
-        } catch {
-            $err = "Abitti install error: $_"
-            Write-Host $err
-            Invoke-WPFUIThread -ScriptBlock {
-                Set-WinUtilTaskbaritem -state 'Error' -overlay 'warning'
-                $sync.progressBarTextBlock.Text = ''
-                $sync.progressBarTextBlock.ToolTip = ''
-                $sync.ProgressBar.Value = 0
-                Hide-WPFInstallAppBusy
-                try {
-                    $sync.Form.Activate() | Out-Null
-                } catch { }
-            }
-        } finally {
-            $sync.ProcessRunning = $false
-            Invoke-WPFUIThread -ScriptBlock {
-                Hide-WPFInstallAppBusy
-                try {
-                    $sync.Form.Activate() | Out-Null
-                } catch { }
-            }
+    try {
+        $sync.ProcessRunning = $true
+        Invoke-WPFUIThread -ScriptBlock {
+            Set-WinUtilProgressbar -label 'Starting Abitti installer process...' -percent 20
+            Set-WinUtilTaskbaritem -state 'Normal' -overlay 'download'
         }
-    } | Out-Null
+
+        $bootstrapName = "winutil-abitti-install-{0:yyyyMMdd-HHmmss}.ps1" -f (Get-Date)
+        $bootstrapPath = Join-Path $env:TEMP $bootstrapName
+        $bootstrap = @"
+`$ErrorActionPreference = 'Stop'
+`$sync = [hashtable]::Synchronized(@{})
+`$sync.CustomSetupLogPath = '$($sync.CustomSetupLogPath)'
+. '$($sync.PSScriptRoot)\custom\lib\SetupLogging.ps1'
+. '$($sync.PSScriptRoot)\custom\apps\abitti.ps1'
+Write-SetupLog 'Abitti background installer process started.' 'INFO'
+Install-AbittiCandidate
+Write-SetupLog 'Abitti background installer process finished.' 'SUCCESS'
+"@
+        Set-Content -LiteralPath $bootstrapPath -Value $bootstrap -Encoding ascii
+
+        $psExe = if (Get-Command pwsh -ErrorAction SilentlyContinue) { 'pwsh' } else { 'powershell.exe' }
+        $args = @(
+            '-ExecutionPolicy', 'Bypass',
+            '-NoProfile',
+            '-File', $bootstrapPath
+        )
+        $proc = Start-Process -FilePath $psExe -ArgumentList $args -PassThru
+        Write-Host "[WinUtil] Abitti installer started in separate process (PID $($proc.Id))."
+        Write-Host "[WinUtil] Follow this log for progress: $($sync.CustomSetupLogPath)"
+    } catch {
+        $err = "Abitti launcher error: $_"
+        Write-Host $err
+        Invoke-WPFUIThread -ScriptBlock {
+            Set-WinUtilTaskbaritem -state 'Error' -overlay 'warning'
+            $sync.progressBarTextBlock.Text = ''
+            $sync.progressBarTextBlock.ToolTip = ''
+            $sync.ProgressBar.Value = 0
+        }
+    } finally {
+        $sync.ProcessRunning = $false
+    }
 }
 
 function Invoke-WPFApplySysadminProvisioningTweaks {

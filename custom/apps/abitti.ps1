@@ -65,8 +65,8 @@ function Install-AbittiCandidate {
     #>
     param(
         [string]$DownloadUrl = 'https://dl.abitti.fi/AbittiCandidateInstaller.msi',
-
-        [string]$InstallerPath = $(Join-Path $env:TEMP 'Abitti.msi')
+        [string]$InstallerPath = $(Join-Path $env:TEMP 'AbittiCandidateInstaller.msi'),
+        [string]$MsiLogPath = $(Join-Path $env:TEMP 'abitti-msi.log')
     )
 
     # Diagnostic breadcrumb in case Write-SetupLog is unavailable or blocked.
@@ -108,14 +108,19 @@ function Install-AbittiCandidate {
         throw
     }
 
-    Write-SetupLog 'Running msiexec /qn (silent, no restart) ...' 'INFO'
+    Write-SetupLog "Running msiexec /qn (silent, no restart). MSI log: $MsiLogPath" 'INFO'
     if (Get-Command Set-WinUtilProgressbar -ErrorAction SilentlyContinue) {
         try {
             Set-WinUtilProgressbar -label 'Installing Abitti via msiexec (often 2 to 10 minutes; UI may look idle)...' -percent 58
         } catch { }
     }
-    $msiArgs = "/i `"$InstallerPath`" /qn /norestart"
-    $proc = Start-Process -FilePath msiexec.exe -ArgumentList $msiArgs -Wait -PassThru -NoNewWindow
+    $msiArgs = @(
+        '/i', $InstallerPath,
+        '/qn',
+        '/norestart',
+        '/L*v', $MsiLogPath
+    )
+    $proc = Start-Process -FilePath 'msiexec.exe' -ArgumentList $msiArgs -Wait -PassThru
 
     $code = $proc.ExitCode
     if ($code -eq 0) {

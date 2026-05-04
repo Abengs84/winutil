@@ -23,6 +23,14 @@ Build `winutil.ps1` with `.\Compile.ps1`, then publish it as release asset **`wi
 irm "https://github.com/Abengs84/winutil/releases/latest/download/winutil.ps1" | iex
 ```
 
+### Launch Command (Abitti2 only, quick install)
+
+```ps1
+irm "https://raw.githubusercontent.com/Abengs84/winutil/main/abitti-quick-install.ps1" | iex
+```
+
+This command only downloads and installs Abitti Candidate silently (`/qn`) and writes MSI logs to `%TEMP%\abitti-msi.log`.
+
 Upstream shortcuts (Chris Titus Tech) for reference: `irm "https://christitus.com/win" | iex` — those load the official build, not this fork.
 
 If you have Issues, refer to [Known Issues](https://winutil.christitus.com/knownissues/) or open an issue on your fork.
