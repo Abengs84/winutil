@@ -31,15 +31,22 @@ function Write-SetupLog {
 
     $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
     $line = "[$ts] [$Level] $Message"
-    # WinUtil GUI uses BeginInvoke without EndInvoke; Write-Host from pool runspaces stays buffered.
-    # Same process stdio: use Console on worker threads so lines appear immediately in the terminal.
+    # In GUI mode, logs from pool runspaces should be marshalled to UI thread
+    # so they appear in the same host/transcript stream as normal Write-Host output.
     $scriptTi = $null
     if ($sync -and $null -ne $sync.WinUtilScriptThreadId) {
         $scriptTi = [int]$sync.WinUtilScriptThreadId
     }
     $cur = [System.Threading.Thread]::CurrentThread.ManagedThreadId
-    if ($null -ne $scriptTi -and $cur -ne $scriptTi) {
-        try { [Console]::WriteLine($line) } catch { Write-Host $line }
+    $isWorkerThread = ($null -ne $scriptTi -and $cur -ne $scriptTi)
+    $canUIHostWrite = ($sync -and $sync.Form -and (Get-Command Invoke-WPFUIThread -ErrorAction SilentlyContinue))
+    if ($isWorkerThread -and $canUIHostWrite) {
+        try {
+            $msg = $line
+            Invoke-WPFUIThread -ScriptBlock { Write-Host $msg }
+        } catch {
+            Write-Host $line
+        }
     } else {
         Write-Host $line
     }
@@ -47,8 +54,13 @@ function Write-SetupLog {
         Add-Content -LiteralPath $logPath -Value $line -Encoding utf8 -ErrorAction Stop
     } catch {
         $warn = "[$ts] [WARN] Could not append to log file: $logPath - $_"
-        if ($null -ne $scriptTi -and $cur -ne $scriptTi) {
-            try { [Console]::WriteLine($warn) } catch { Write-Host $warn }
+        if ($isWorkerThread -and $canUIHostWrite) {
+            try {
+                $warnMsg = $warn
+                Invoke-WPFUIThread -ScriptBlock { Write-Host $warnMsg }
+            } catch {
+                Write-Host $warn
+            }
         } else {
             Write-Host $warn
         }
