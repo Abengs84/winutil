@@ -31,10 +31,26 @@ function Write-SetupLog {
 
     $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
     $line = "[$ts] [$Level] $Message"
-    Write-Host $line
+    # WinUtil GUI uses BeginInvoke without EndInvoke; Write-Host from pool runspaces stays buffered.
+    # Same process stdio: use Console on worker threads so lines appear immediately in the terminal.
+    $scriptTi = $null
+    if ($sync -and $null -ne $sync.WinUtilScriptThreadId) {
+        $scriptTi = [int]$sync.WinUtilScriptThreadId
+    }
+    $cur = [System.Threading.Thread]::CurrentThread.ManagedThreadId
+    if ($null -ne $scriptTi -and $cur -ne $scriptTi) {
+        try { [Console]::WriteLine($line) } catch { Write-Host $line }
+    } else {
+        Write-Host $line
+    }
     try {
         Add-Content -LiteralPath $logPath -Value $line -Encoding utf8 -ErrorAction Stop
     } catch {
-        Write-Host "[$ts] [WARN] Could not append to log file: $logPath - $_"
+        $warn = "[$ts] [WARN] Could not append to log file: $logPath - $_"
+        if ($null -ne $scriptTi -and $cur -ne $scriptTi) {
+            try { [Console]::WriteLine($warn) } catch { Write-Host $warn }
+        } else {
+            Write-Host $warn
+        }
     }
 }

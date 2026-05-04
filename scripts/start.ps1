@@ -86,6 +86,8 @@ $sync.currentTab = "Install"
 $sync.selectedAppsStackPanel
 $sync.selectedAppsPopup
 $sync.CustomSetupLogPath = Join-Path $env:TEMP ("sysadmin-setup-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date))
+# Used by Write-SetupLog: worker runspace threads must use Console (Write-Host is buffered until EndInvoke).
+$sync.WinUtilScriptThreadId = [System.Threading.Thread]::CurrentThread.ManagedThreadId
 
 $dateTime = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
 

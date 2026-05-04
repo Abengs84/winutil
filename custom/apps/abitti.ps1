@@ -79,6 +79,11 @@ function Install-AbittiCandidate {
     try {
         if (-not (Test-Path -LiteralPath $InstallerPath)) {
             Write-SetupLog "Downloading installer to `"$InstallerPath`" ..." 'INFO'
+            if (Get-Command Set-WinUtilProgressbar -ErrorAction SilentlyContinue) {
+                try {
+                    Set-WinUtilProgressbar -label 'Downloading Abitti Candidate MSI (can take a while on slow links)...' -percent 22
+                } catch { }
+            }
             $parent = Split-Path -Parent $InstallerPath
             if (-not (Test-Path -LiteralPath $parent)) {
                 New-Item -ItemType Directory -Path $parent -Force | Out-Null
@@ -97,6 +102,11 @@ function Install-AbittiCandidate {
     }
 
     Write-SetupLog 'Running msiexec /qn (silent, no restart) ...' 'INFO'
+    if (Get-Command Set-WinUtilProgressbar -ErrorAction SilentlyContinue) {
+        try {
+            Set-WinUtilProgressbar -label 'Installing Abitti via msiexec (often 2 to 10 minutes; UI may look idle)...' -percent 58
+        } catch { }
+    }
     $msiArgs = "/i `"$InstallerPath`" /qn /norestart"
     $proc = Start-Process -FilePath msiexec.exe -ArgumentList $msiArgs -Wait -PassThru -NoNewWindow
 

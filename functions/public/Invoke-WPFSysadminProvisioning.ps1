@@ -9,6 +9,10 @@ function Invoke-WPFInstallAbittiCandidate {
         return
     }
 
+    Write-Host ''
+    Write-Host "[WinUtil] Abitti 2 Candidate: installation startad i bakgrunden. Logg (samma som setup): $($sync.CustomSetupLogPath)" -ForegroundColor Cyan
+    Write-Host '[WinUtil] Följ raderna nedan under nedladdning och msiexec (kan ta flera minuter).' -ForegroundColor DarkGray
+
     Invoke-WPFRunspace -ScriptBlock {
         try {
             $sync.ProcessRunning = $true
@@ -32,7 +36,8 @@ function Invoke-WPFInstallAbittiCandidate {
                 } catch { }
             }
         } catch {
-            Write-Host "Abitti install error: $_"
+            $err = "Abitti install error: $_"
+            try { [Console]::WriteLine($err) } catch { Write-Host $err }
             Invoke-WPFUIThread -ScriptBlock {
                 Set-WinUtilTaskbaritem -state 'Error' -overlay 'warning'
                 $sync.progressBarTextBlock.Text = ''
