@@ -69,6 +69,12 @@ function Install-AbittiCandidate {
         [string]$InstallerPath = $(Join-Path $env:TEMP 'Abitti.msi')
     )
 
+    # Diagnostic breadcrumb in case Write-SetupLog is unavailable or blocked.
+    try {
+        $diagPath = if ($sync -and $sync.CustomSetupLogPath) { [string]$sync.CustomSetupLogPath } else { Join-Path $env:TEMP ("sysadmin-setup-{0:yyyyMMdd-HHmmss}.log" -f (Get-Date)) }
+        Add-Content -LiteralPath $diagPath -Value "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] [INFO] Entered Install-AbittiCandidate." -Encoding utf8
+    } catch { }
+
     Write-SetupLog 'Abitti Candidate: starting installer workflow.' 'INFO'
 
     if (Test-AbittiCandidateInstalled) {
@@ -88,7 +94,8 @@ function Install-AbittiCandidate {
             if (-not (Test-Path -LiteralPath $parent)) {
                 New-Item -ItemType Directory -Path $parent -Force | Out-Null
             }
-            Invoke-WebRequest -Uri $DownloadUrl -OutFile $InstallerPath -UseBasicParsing
+            Write-SetupLog 'Starting download request (timeout 45s for first response)...' 'INFO'
+            Invoke-WebRequest -Uri $DownloadUrl -OutFile $InstallerPath -UseBasicParsing -TimeoutSec 45 -ErrorAction Stop
         } else {
             Write-SetupLog "Installer already present at `"$InstallerPath`"; reusing file." 'INFO'
         }

@@ -31,38 +31,11 @@ function Write-SetupLog {
 
     $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
     $line = "[$ts] [$Level] $Message"
-    # In GUI mode, logs from pool runspaces should be marshalled to UI thread
-    # so they appear in the same host/transcript stream as normal Write-Host output.
-    $scriptTi = $null
-    if ($sync -and $null -ne $sync.WinUtilScriptThreadId) {
-        $scriptTi = [int]$sync.WinUtilScriptThreadId
-    }
-    $cur = [System.Threading.Thread]::CurrentThread.ManagedThreadId
-    $isWorkerThread = ($null -ne $scriptTi -and $cur -ne $scriptTi)
-    $canUIHostWrite = ($sync -and $sync.Form -and (Get-Command Invoke-WPFUIThread -ErrorAction SilentlyContinue))
-    if ($isWorkerThread -and $canUIHostWrite) {
-        try {
-            $msg = $line
-            Invoke-WPFUIThread -ScriptBlock { Write-Host $msg }
-        } catch {
-            Write-Host $line
-        }
-    } else {
-        Write-Host $line
-    }
+    # Keep console output simple/safe here; marshalling across threads can deadlock.
+    Write-Host $line
     try {
         Add-Content -LiteralPath $logPath -Value $line -Encoding utf8 -ErrorAction Stop
     } catch {
-        $warn = "[$ts] [WARN] Could not append to log file: $logPath - $_"
-        if ($isWorkerThread -and $canUIHostWrite) {
-            try {
-                $warnMsg = $warn
-                Invoke-WPFUIThread -ScriptBlock { Write-Host $warnMsg }
-            } catch {
-                Write-Host $warn
-            }
-        } else {
-            Write-Host $warn
-        }
+        Write-Host "[$ts] [WARN] Could not append to log file: $logPath - $_"
     }
 }

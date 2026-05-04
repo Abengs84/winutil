@@ -12,6 +12,14 @@ function Invoke-WPFInstallAbittiCandidate {
     Write-Host ''
     Write-Host "[WinUtil] Abitti 2 Candidate: installation startad i bakgrunden. Logg (samma som setup): $($sync.CustomSetupLogPath)" -ForegroundColor Cyan
     Write-Host '[WinUtil] Folj raderna nedan under nedladdning och msiexec (kan ta flera minuter).' -ForegroundColor DarkGray
+    try {
+        if (-not (Test-Path -LiteralPath $sync.CustomSetupLogPath)) {
+            New-Item -ItemType File -Path $sync.CustomSetupLogPath -Force | Out-Null
+        }
+        Add-Content -LiteralPath $sync.CustomSetupLogPath -Value "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] [INFO] UI click: Abitti install button pressed." -Encoding utf8
+    } catch {
+        Write-Host "Could not initialize Abitti log file: $($_.Exception.Message)"
+    }
 
     Invoke-WPFRunspace -ScriptBlock {
         try {
