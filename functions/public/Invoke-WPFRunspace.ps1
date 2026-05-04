@@ -30,29 +30,48 @@ function Invoke-WPFRunspace {
         $ParameterList
     )
 
-    # Create a PowerShell instance
-    $script:powershell = [powershell]::Create()
+    # Create a PowerShell instance (local to this invocation).
+    $powershell = [powershell]::Create()
 
     # Add Scriptblock and Arguments to runspace
-    $script:powershell.AddScript($ScriptBlock)
-    $script:powershell.AddArgument($ArgumentList)
+    $powershell.AddScript($ScriptBlock) | Out-Null
+    $powershell.AddArgument($ArgumentList) | Out-Null
 
     foreach ($parameter in $ParameterList) {
-        $script:powershell.AddParameter($parameter[0], $parameter[1])
+        $powershell.AddParameter($parameter[0], $parameter[1]) | Out-Null
     }
 
-    $script:powershell.RunspacePool = $sync.runspace
+    $powershell.RunspacePool = $sync.runspace
 
     # Execute the RunspacePool
-    $script:handle = $script:powershell.BeginInvoke()
+    $handle = $powershell.BeginInvoke()
 
-    # Clean up the RunspacePool threads when they are complete, and invoke the garbage collector to clean up the memory
-    if ($script:handle.IsCompleted) {
-        $script:powershell.EndInvoke($script:handle)
-        $script:powershell.Dispose()
-        $sync.runspace.Dispose()
-        $sync.runspace.Close()
-        [System.GC]::Collect()
+    # Ensure EndInvoke is always called so errors/output are flushed and resources are released.
+    if ($handle.IsCompleted) {
+        try {
+            $powershell.EndInvoke($handle) | Out-Null
+        } catch {
+            Write-Host "Runspace error: $_"
+        } finally {
+            $powershell.Dispose()
+        }
+    } else {
+        [System.Threading.ThreadPool]::RegisterWaitForSingleObject(
+            $handle.AsyncWaitHandle,
+            [System.Threading.WaitOrTimerCallback]{
+                param($state, $timedOut)
+                try {
+                    $state.PowerShell.EndInvoke($state.Handle) | Out-Null
+                } catch {
+                    # EndInvoke can throw when task failed; suppress here because caller handles task-level UX.
+                } finally {
+                    $state.PowerShell.Dispose()
+                }
+            },
+            @{ PowerShell = $powershell; Handle = $handle },
+            -1,
+            $true
+        ) | Out-Null
     }
     # Return the handle
     return $handle
